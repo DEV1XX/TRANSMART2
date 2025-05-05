@@ -1,97 +1,97 @@
 const express = require("express");
 const xlsx = require("xlsx");
 const User = require("../models/User.model.js");
-const Income = require("../models/Income.model.js");
+const Expense = require("../models/Expense.model.js");
 
-//add income
-const addIncome = async (req, res) => {
+//add expense
+const addExpense = async (req, res) => {
     const userId = req.user.id;
     try {
-        const {source ,amount , icon, date} = req.body;
-        if(!source || !amount || !date){
+        const {category ,amount , icon, date} = req.body;
+        if(!category || !amount || !date){
             return res.status(400).json({
                 success:false,
                 message:"All fields are required!",
             });
         }
-        const income = await Income.create({
+        const expense = await Expense.create({
             userId,
             icon,
-            source,
+            category,
             amount,
             date: new Date(date)
         });
         res.status(200).json({
             success:true,
-            message:"Income added successfully!",
-            income
+            message:"Expense added successfully!",
+            expense
         })
     } catch (error) {
         return res.staus(500).json({
             success: false,
-            message:"Failed adding income !",
+            message:"Failed adding expense !",
         })
     }
 }
-//get all income
-const getAllIncome = async (req, res) => {
+//get all expense
+const getAllExpense = async (req, res) => {
     const userId  = req.user.id;
     try {
-        const income = await Income.find({userId}).sort({date: -1});
+        const expense = await Expense.find({userId}).sort({date: -1});
         res.status(200).json({
             success:true,
-            message:"Income fetched successfully!",
-            income,
+            message:"Expense fetched successfully!",
+            expense,
         })
     } catch (error) {
         res.status(500).json({
             success:false,
-            message:"Failed fetching income details!"
+            message:"Failed fetching expense details!"
         })
     }
 }
-//delete income 
-const deleteIncome = async (req, res) => {
+//delete expense
+const deleteExpense = async (req, res) => {
     const userId = req.user.id;
     try {
         await Income.findByIdAndDelete({userId});
         res.status(200).json({
             success: true,
-            message:"Income deleted successfully."
+            message:"Expense deleted successfully."
         })
     } catch (error) {
         res.status(500).json({
             success: false,
-            message: "Failed deleting the income"
+            message: "Failed deleting the expense"
         })
     }
 }
-//downloadIncome excel
-const downloadIncomeExcel = async (req, res) => {
+//download Expense excel
+const downloadExpenseExcel = async (req, res) => {
     const userId = req.user.id;
     try {
-        const income = await Income.find({userId}).sort({date: -1});
+        const expense = await Expense.find({userId}).sort({date: -1});
         //prepare data for excel
-        const data = income.map((item) => ({
-            Source : item.source,
+        const data = expense.map((item) => ({
+            category : item.category,
             Amount : item.amount,
             Date : item.date
         }));
         const wb = xlsx.utils.book_new();
         const ws = xlsx.utils.json_to_sheet(data);
-        xlsx.utils.book_append_sheet(wb, ws, "Income");
-        xlsx.writeFile(wb, "income_details.xlsx");
-        res.download("income_details.xlsx");
+        xlsx.utils.book_append_sheet(wb, ws, "Expense");
+        xlsx.writeFile(wb, "expense_details.xlsx");
+        res.download("expense_details.xlsx");
     } catch (error) {
         res.status(500).json({
             success: false,
-            message: "Failed downloading the income details!"
+            message: "Failed downloading the expense details!"
         })
     }
 }
 module.exports = {
-    addIncome,
-    getAllIncome,
-    deleteIncome,
-    downloadIncomeExcel
+    addExpense,
+    getAllExpense,
+    deleteExpense,
+    downloadExpenseExcel
 } 
