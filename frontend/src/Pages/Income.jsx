@@ -12,6 +12,7 @@ import {
   DollarSign, Calendar, Activity, RefreshCw, Plus, X, Trash2, Filter, 
   TrendingUp, Edit, Download, ChevronDown
 } from 'lucide-react';
+import axios from 'axios';
 
 const Income = () => {
   const [loading, setLoading] = useState(true);
@@ -31,6 +32,28 @@ const Income = () => {
       description: ''
     }
   });
+
+  const exportData = async () => {
+  try {
+  const response = await axiosInstance.get(
+    API_PATHS.INCOME.DOWNLOAD_INCOME,
+    {
+      responseType: "blob",
+    }
+  );
+  // Create a URL for the blob
+  const url = window.URL.createObjectURL(new Blob([response.data]));
+  const link = document.createElement("a");
+  link.href = url;
+  link.setAttribute("download", "income_details.xlsx");
+  document.body.appendChild(link);
+  link.click();
+  link.parentNode.removeChild(link);
+  window.URL.revokeObjectURL(url);
+} catch (error) {
+  console.error("Error downloading income details:", error);
+}
+  }
   
   const fetchDashboardData = async () => {
     setLoading(true);
@@ -517,7 +540,9 @@ const Income = () => {
                 <ChevronDown size={14} className="ml-1" />
               </button>
             </div>
-            <button className="px-3 py-1.5 bg-gray-100 dark:bg-slate-700 rounded-lg text-sm flex items-center hover:bg-gray-200 dark:hover:bg-slate-600 transition-colors">
+            <button className="px-3 py-1.5 bg-gray-100 dark:bg-slate-700 rounded-lg text-sm flex items-center hover:bg-gray-200 dark:hover:bg-slate-600 transition-colors"
+             onClick={exportData}
+            >
               <Download size={14} className="mr-1" />
               Export
             </button>
