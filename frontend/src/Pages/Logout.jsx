@@ -21,7 +21,7 @@ const Logout = () => {
     // Simulate async delay
     setTimeout(() => {
       setLoading(false);
-      navigate('/login');
+      navigate('/');
     }, 1500);
   };
 
