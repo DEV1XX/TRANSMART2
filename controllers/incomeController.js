@@ -54,7 +54,7 @@ const getAllIncome = async (req, res) => {
 const deleteIncome = async (req, res) => {
     const userId = req.user.id;
     try {
-        await Income.findByIdAndDelete({userId});
+        await Income.findByIdAndDelete(req.params.id);
         res.status(200).json({
             success: true,
             message:"Income deleted successfully."
