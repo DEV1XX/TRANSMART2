@@ -43,7 +43,8 @@ const Dashboard = () => {
     
     return data.recentTransactions.map(transaction => ({
       name: transaction.source || transaction.category || 'Other',
-      amount: transaction.amount
+      amount: transaction.amount,
+      type: transaction.source ? 'Income' : 'Expense'
     }));
   };
 
@@ -110,10 +111,16 @@ const Dashboard = () => {
   // Custom gradient colors for charts
   const getBarGradient = () => {
     return (
-      <linearGradient id="barGradient" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="5%" stopColor="#6366F1" stopOpacity={0.9} />
-        <stop offset="95%" stopColor="#8B5CF6" stopOpacity={0.4} />
-      </linearGradient>
+      <>
+        <linearGradient id="incomeBarGradient" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="5%" stopColor="#10B981" stopOpacity={0.9} />
+          <stop offset="95%" stopColor="#059669" stopOpacity={0.4} />
+        </linearGradient>
+        <linearGradient id="expenseBarGradient" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="5%" stopColor="#EF4444" stopOpacity={0.9} />
+          <stop offset="95%" stopColor="#DC2626" stopOpacity={0.4} />
+        </linearGradient>
+      </>
     );
   };
 
@@ -246,11 +253,16 @@ const Dashboard = () => {
                 <Legend />
                 <Bar 
                   dataKey="amount" 
-                  fill="url(#barGradient)" 
                   radius={[8, 8, 0, 0]} 
                   barSize={30}
                   filter="url(#shadow)"
-                />
+                  fill="url(#incomeBarGradient)"
+                  name="Transaction Amount"
+                >
+                  {transactionData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.type === 'Income' ? "url(#incomeBarGradient)" : "url(#expenseBarGradient)"} />
+                  ))}
+                </Bar>
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -273,26 +285,35 @@ const Dashboard = () => {
             </thead>
             <tbody className="bg-white dark:bg-transparent divide-y divide-gray-200 dark:divide-gray-700/30">
               {data.recentTransactions && data.recentTransactions.map((transaction, index) => (
-                <tr key={transaction.id || index} className="hover:bg-gray-50 dark:hover:bg-white/5 transition-colors duration-150">
+                <tr key={transaction.id || index} 
+                    className={`hover:bg-gray-50 dark:hover:bg-white/5 transition-colors duration-150 ${
+                      transaction.source 
+                        ? 'bg-green-50/30 dark:bg-green-900/10' 
+                        : 'bg-red-50/30 dark:bg-red-900/10'
+                    }`}>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center">
                       {transaction.source ? (
-                        <span className="text-sm font-medium text-gray-900 dark:text-gray-100">{transaction.source}</span>
+                        <span className="text-sm font-medium text-green-800 dark:text-green-300">{transaction.source}</span>
                       ) : transaction.category ? (
-                        <span className="text-sm font-medium text-gray-900 dark:text-gray-100">{transaction.category}</span>
+                        <span className="text-sm font-medium text-red-800 dark:text-red-300">{transaction.category}</span>
                       ) : (
                         <span className="text-sm font-medium text-gray-500 dark:text-gray-400">Unknown</span>
                       )}
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm font-medium text-gray-900 dark:text-gray-100">₹{transaction.amount.toLocaleString()}</div>
+                    <div className={`text-sm font-medium ${
+                      transaction.source 
+                        ? 'text-green-700 dark:text-green-300' 
+                        : 'text-red-700 dark:text-red-300'
+                    }`}>₹{transaction.amount.toLocaleString()}</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
                       transaction.source 
-                        ? 'bg-green-100/80 text-green-800 dark:bg-green-900/40 dark:text-green-300' 
-                        : 'bg-red-100/80 text-red-800 dark:bg-red-900/40 dark:text-red-300'
+                        ? 'bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300' 
+                        : 'bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-300'
                     }`}>
                       {transaction.source ? 'Income' : 'Expense'}
                     </span>

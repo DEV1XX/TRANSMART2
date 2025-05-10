@@ -4,17 +4,20 @@ import DarkModeIcon from '@mui/icons-material/DarkMode';
 import MenuIcon from '@mui/icons-material/Menu';
 import MenuOpenIcon from '@mui/icons-material/MenuOpen';
 
-import SideBarSlice from '../Slices/SideBarSlice'
-import { toggleSideBar } from '../Slices/SideBarSlice'; 
-import {useDispatch, useSelector} from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { toggleSideBar } from '../Slices/SideBarSlice';
 
 const NavBar = () => {
   const isOpen = useSelector((state) => state.sidebar.isSideBarOpen);
   const dispatch = useDispatch();
-
-    const [isDarkMode, setIsDarkMode] = useState(() => {
-      return localStorage.getItem("darkMode") === "true";
-    });
+  
+  // Get user data from Redux store
+  const { isLoggedIn, name, user } = useSelector((state) => state.auth);
+  const profileImageUrl = localStorage.getItem("profileImageUrl") || null;
+  
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    return localStorage.getItem("darkMode") === "true";
+  });
 
   useEffect(() => {
     if (isDarkMode) {
@@ -30,6 +33,11 @@ const NavBar = () => {
     setIsDarkMode(!isDarkMode);
   };
 
+  // Get first letter of name for avatar fallback
+  const getInitial = () => {
+    return name && name.length > 0 ? name.charAt(0).toUpperCase() : "U";
+  };
+
   return (
     <div className="flex justify-between p-[2vh] pl-[3vh] pr-[5vh] md:pl-[5vh] md:pr-[20vh] transition dark:bg-slate-900 dark:text-white align-middle shadow-md dark:shadow-md border-b-1 border-gray-100">
       <div className="flex">
@@ -43,10 +51,28 @@ const NavBar = () => {
         </div>
         <div className="text-2xl md:text-2xl pt-2 ml-5">TRANSMART</div>
       </div>
-      <div className="rounded-full bg-slate-300 h-[40px] w-[40px] flex justify-center dark:bg-slate-700 hover:scale-110">
-        <button onClick={toggleTheme}>
-          {isDarkMode ? <LightModeIcon /> : <DarkModeIcon />}
-        </button>
+      <div className="flex items-center gap-4">
+        <div className="rounded-full bg-slate-300 h-[40px] w-[40px] flex justify-center items-center dark:bg-slate-700 hover:scale-110">
+          <button onClick={toggleTheme}>
+            {isDarkMode ? <LightModeIcon /> : <DarkModeIcon />}
+          </button>
+        </div>
+        
+        {isLoggedIn && (
+          <div className="rounded-full h-[40px] w-[40px] flex justify-center items-center overflow-hidden">
+            {profileImageUrl ? (
+              <img 
+                src={profileImageUrl} 
+                alt="User profile" 
+                className="h-full w-full object-cover"
+              />
+            ) : (
+              <div className="bg-blue-500 text-white h-full w-full flex justify-center items-center font-semibold">
+                {getInitial()}
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

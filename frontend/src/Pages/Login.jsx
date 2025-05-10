@@ -24,6 +24,7 @@ const Login = () => {
     localStorage.setItem('id', userData._id);
     localStorage.setItem('name', userData.fullName);
     localStorage.setItem('email', userData.email);
+    localStorage.setItem('profileImageUrl', userData.profileImageUrl || "");
 
     const categories = userData.categories || [];
     localStorage.setItem('categories', JSON.stringify(categories));
@@ -41,6 +42,7 @@ const Login = () => {
       categories: userData.categories || [],
     };
 
+    
     dispatch(setUser(user));
     dispatch(setName(userData.fullName));
     dispatch(setEmail(userData.email));
