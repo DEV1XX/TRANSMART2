@@ -95,6 +95,8 @@ const getUserInfo = async(req , res) => {
 //Logout User
 const logoutUser = async (req ,res) => {};
 
+
+
 module.exports = {
     registerUser,
     loginUser,
