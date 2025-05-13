@@ -95,11 +95,31 @@ const getUserInfo = async(req , res) => {
 //Logout User
 const logoutUser = async (req ,res) => {};
 
-
+//update profileImageUrl
+const updateProfileImageUrl = async (req, res) => {
+    const { profileImageUrl } = req.body;
+    if (!profileImageUrl) {
+        return res.status(400).json({ message: "Profile image URL is required!" });
+    }
+    try {
+        const user = await User.findByIdAndUpdate(req.user.id, { profileImageUrl }, { new: true });
+        if (!user) {
+            return res.status(404).json({ message: "User not found!" });
+        }
+        res.status(200).json({
+            success: true,
+            message: "Profile image updated successfully!",
+            user
+        });
+    } catch (error) {
+        res.status(500).json({ message: "Error updating profile image!", error });
+    }
+};
 
 module.exports = {
     registerUser,
     loginUser,
     logoutUser,
-    getUserInfo
+    getUserInfo,
+    updateProfileImageUrl
 };

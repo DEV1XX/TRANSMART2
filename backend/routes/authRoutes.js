@@ -5,6 +5,7 @@ const {
     loginUser,
     logoutUser,
     getUserInfo,
+    updateProfileImageUrl
 } = require("../controllers/authController.js");
 const upload = require("../middleware/uploadMiddleware.js")
 
@@ -14,6 +15,7 @@ router.post('/register', registerUser);
 router.post('/login', loginUser);
 router.get('/logout', logoutUser);
 router.get('/getUser', protect, getUserInfo);
+router.post('/updateProfileImageUrl', protect, updateProfileImageUrl);
 
 router.post("/upload-image", upload.single("image"), (req,res) => {
     if(!req.file){
