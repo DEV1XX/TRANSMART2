@@ -35,7 +35,7 @@ const HomePage = () => {
               <div className="relative mx-auto max-w-lg lg:max-w-none">
                 <div className="relative z-10 rounded-lg shadow-xl overflow-hidden">
                   <img 
-                    src="src/assets/dashboard preview.png" 
+                    src="/assets/dashboard preview.png" 
                     alt="TRANSMART Dashboard" 
                     className="w-full h-auto object-cover"
                   />
@@ -117,7 +117,7 @@ const HomePage = () => {
                 </div>
                 <div className="relative">
                   <img 
-                    src="/src/assets/expense preview.png" 
+                    src="/assets/expense preview.png" 
                     alt="Expense Dashboard" 
                     className="w-full h-full object-cover"
                   />
@@ -136,7 +136,7 @@ const HomePage = () => {
                 </div>
                 <div className="relative">
                   <img 
-                    src="/src/assets/income preview.png" 
+                    src="/assets/income preview.png" 
                     alt="Income Dashboard" 
                     className="w-full h-full object-cover"
                   />
